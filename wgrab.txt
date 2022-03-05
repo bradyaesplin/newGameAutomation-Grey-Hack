@@ -1,0 +1,215 @@
+// Wifi Grabber written by Serious on Grey Hack v0.7.3619 - ALPHA in CodeEditor.exe
+
+// Program will find WiFi networks and automatically log the user in to them all.
+
+// Program then displays a list of networks with passwords in case the user wants
+// to copy and paste for future reference.
+
+// I save it as wgrab
+
+// Usage: type wgrab, press enter
+
+crypto = include_lib("/lib/crypto.so")
+// stores the library found in "/lib/crypto.so" in variable named "crypto" 
+
+if not crypto then
+	// if the library doesnt load then do the following lines
+	crypto = include_lib("crypto.so")
+	// loads up variable "crypto" with library if it is located in the home folder
+	if not crypto then exit("Error: Cannot locate crypto.so file. Place it in the /lib folder or in the /home/your_username folder.")
+	// if the crypto library is still not located, exits with error message on how to correct the issue
+end if
+// ends the above "if" loop
+
+thisPC = get_shell.host_computer
+// gets the information for the current computer that the user is on and stores it in the variable "thisPC"
+
+interface = "wlan0"
+// this stores the string "wlan0" in the variable "interface"
+
+if not crypto.airmon("start", interface) then exit("Error: Cannot start monitoring on " + interface + ", Unknown reason.")
+// if the script can't start airmon on interface then exit with an error message
+
+networks = thisPC.wifi_networks(interface)
+// writes available wifi networks into the variable "networks"
+
+if not networks then exit("Error: Can't find any networks, Unknown reason")
+// if the script can't see any networks then exit with an error message
+
+wpasslist = []
+// set an empty list to the variable "wpasslist"
+
+print("<b> This is going to take a while. It will take longer the more networks you have available and the lower power they transmit at. </b>")
+
+for network in networks
+	// starts a for loop to iterate through the available networks
+	split = network.split(" ")
+	// split the string that we get back from network loop at every space in the line
+	bssid = split[0]
+	// writes the first part of the split network line into the variable "bssid"
+	power = split[1]
+	// writes the second part of the split network line into the variable "power"
+	essid = split[2]
+	// writes the third part of the split network line into the variable "essid"
+	reqACKS = "0"
+	// writes the string "0" into the variable "reqACKS"
+	if power == "100%" then reqACKS = 3100
+	if power == "99%" then reqACKS = 3130
+	if power == "98%"	then reqACKS = 3161
+	if power == "97%" then reqACKS = 3193
+	if power == "96%" then reqACKS = 3225
+	if power == "95%" then reqACKS = 3258
+	if power == "94%" then reqACKS = 3291
+	if power == "93%" then reqACKS = 3326
+	if power == "92%" then reqACKS = 3361
+	if power == "91%" then reqACKS = 3397
+	if power == "90%" then reqACKS = 3433
+	if power == "89%" then reqACKS = 3471
+	if power == "88%" then reqACKS = 3509
+	if power == "87%" then reqACKS = 3548
+	if power == "86%" then reqACKS = 3588
+	if power == "85%" then reqACKS = 3629
+	if power == "84%" then reqACKS = 3661 
+	if power == "83%" then reqACKS = 3714
+	if power == "82%" then reqACKS = 3759
+	if power == "81%" then reqACKS = 3804
+	if power == "80%" then reqACKS = 3850
+	if power == "79%" then reqACKS = 3897 
+	if power == "78%" then reqACKS = 3946
+	if power == "77%" then reqACKS = 3996
+	if power == "76%" then reqACKS = 4017
+	if power == "75%" then reqACKS = 4100
+	if power == "74%" then reqACKS = 4154
+	if power == "73%" then reqACKS = 4210
+	if power == "72%" then reqACKS = 4267
+	if power == "71%" then reqACKS = 4325 
+	if power == "70%" then reqACKS = 4386
+	if power == "69%" then reqACKS = 4448
+	if power == "68%" then reqACKS = 4512
+	if power == "67%" then reqACKS = 4578
+	if power == "66%" then reqACKS = 4645
+	if power == "65%" then reqACKS = 4745
+	if power == "64%" then reqACKS = 4788
+	if power == "63%" then reqACKS = 4862
+	if power == "62%" then reqACKS = 4939
+	if power == "61%" then reqACKS = 5018
+	if power == "60%" then reqACKS = 5100
+	if power == "59%" then reqACKS = 5185
+	if power == "58%" then reqACKS = 5272
+	if power == "57%" then reqACKS = 5363
+	if power == "56%" then reqACKS = 5457
+	if power == "55%" then reqACKS = 5555
+	if power == "54%" then reqACKS = 5656
+	if power == "53%" then reqACKS = 5760
+	if power == "52%" then reqACKS = 5869
+	if power == "51%" then reqACKS = 5982
+	if power == "50%" then reqACKS = 6100
+	if power == "49%" then reqACKS = 6222
+	if power == "48%" then reqACKS = 6350
+	if power == "47%" then reqACKS = 6483
+	if power == "46%" then reqACKS = 6622
+	if power == "45%" then reqACKS = 6767
+	if power == "44%" then reqACKS = 6918
+	if power == "43%" then reqACKS = 7077
+	if power == "42%" then reqACKS = 7243	
+	if power == "41%" then reqACKS = 7417
+	if power == "40%" then reqACKS = 7600
+	if power == "39%" then reqACKS = 7792
+	if power == "38%" then reqACKS = 7995
+	if power == "37%" then reqACKS = 8208
+	if power == "36%" then reqACKS = 8433
+	if power == "35%" then reqACKS = 8671
+	if power == "34%" then reqACKS = 8924
+	if power == "33%" then reqACKS = 9191
+	if power == "32%" then reqACKS = 9475
+	if power == "31%" then reqACKS = 9777
+	if power == "30%" then reqACKS = 10100
+	if power == "29%" then reqACKS = 10445
+	if power == "28%" then reqACKS = 10814
+	if power == "27%" then reqACKS = 11211
+	if power == "26%" then reqACKS = 11638
+	if power == "25%" then reqACKS = 12100
+	if power == "24%" then reqACKS = 12600
+	if power == "23%" then reqACKS = 13143
+	if power == "22%" then reqACKS = 13736
+	if power == "21%" then reqACKS = 14386
+	if power == "20%" then reqACKS = 15100
+	if power == "19%" then reqACKS = 15889
+	if power == "18%" then reqACKS = 16767
+	if power == "17%" then reqACKS = 17747
+	if power == "16%" then reqACKS = 18850
+	if power == "15%" then reqACKS = 20100
+	if power == "14%" then reqACKS = 21429
+	if power == "13%" then reqACKS = 23177
+	if power == "12%" then reqACKS = 25100
+	if power == "11%" then reqACKS = 27373
+	if power == "10%" then reqACKS = 30100
+	if power == "9%" then reqACKS = 33433
+	if power == "8%" then reqACKS = 37600
+	if power == "7%" then reqACKS = 42957
+	if power == "6%" then reqACKS = 50100
+	if power == "5%" then reqACKS = 60100
+	if power == "4%" then reqACKS = 75100
+	if power == "3%" then reqACKS = 100100
+	if power == "2%" then reqACKS = 150100 
+	if power == "1%" then reqACKS = 300100
+	// the preceding 100 lines of code where to replace the value of the variable "reqACKS" with the number
+	// required to successfully use airecrack on the network + 100 for a cushion 
+	
+	crypto.aireplay(bssid, essid, reqACKS) 
+	// run airplay using the supplied variables
+	
+	capfilepath = home_dir + "/file.cap"
+	// store the path to the cap file in variable "capfilepath"
+	
+	capfile = thisPC.File(capfilepath)
+	// store the actual capfile for use below
+	
+	if not capfile then exit("Error: file.cap is missing, Unknown reason.")
+	// if there is no file.cap exit with error message
+	
+	if not capfile.has_permission("r") then exit("Error: Need permissions for file.cap to read it. Try running this program as root?")
+	// if user does not have permissions for file.cap exit with error message
+	
+	wpass = crypto.aircrack(capfilepath)
+	// runs aircrack on file.cap stores password in variable "wpass"
+	
+	if not wpass then exit("Error: Could not crack key, Unknown reason.")
+	// if script cannot crack the password exit with error message
+	
+	wpasslist.push(wpass)
+	// pushes each password into the list stored in the variable "wpasslist"
+	
+	if not thisPC.connect_wifi(interface, bssid, essid, wpass) then exit("Error: Connection failed, Unknown reason.")
+	// connects this PC to wireless network and writes status to variable "connectionstatus" if it doesnt
+	// work print an error message
+end for
+// end if loop
+
+capfile.delete
+// removes file.cap as we do not need it anymore
+
+networkcount = 0
+// writes the the integer "0" in the variable "networkcount"
+
+print("# ESSID PASSWORD BSSID (Power%)")
+// writes column headers into variable "display"
+for network in networks
+	// starts a for loop to iterate through the available networks
+	split = network.split(" ")
+	// split the string that we get back from network loop at every space in the line
+	bssid = split[0]
+	// writes the first part of the split network line into the variable "bssid"
+	power = split[1]
+	// writes the second part of the split network line into the variable "power"
+	essid = split[2]
+	// writes the third part of the split network line into the variable "essid"
+	print(networkcount + ":" + essid +" "+ wpasslist[networkcount] +"  "+ bssid + "</b> ("  + power + ")")
+	// displays the information that we have split up to the user in the form needed for copy paste
+	networkcount = networkcount + 1
+	// increments our count of "networkcount" by one
+end for
+// end if loop
+
+if not crypto.airmon("stop", interface) then exit("Error: Cannot stop monitoring on " + interface + ", Unknown reason")
+// if the script can't stop airmon on interface then exit with an error message
