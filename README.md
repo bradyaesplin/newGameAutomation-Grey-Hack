@@ -1,4 +1,4 @@
-## Deprecated, do not use ##
+## Working as of 11/29/2023 ##
 # newGameAutomation-Grey-Hack
 script to automate the tutorial section
 
